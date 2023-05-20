@@ -28,7 +28,7 @@ async function initializeOrGreet() {
 
     // Create user keypair and airdrop SOL if needed
     const userKeypair = initializeSolSignerKeypair()
-    await airdropSolIfNeeded(userKeypair, connection)
+    await airdropSolIfNeeded(connection, userKeypair.publicKey, 2, 0.05)
 
     // Set up Anchor provider and program
     const nodeWallet = new NodeWallet(userKeypair)
