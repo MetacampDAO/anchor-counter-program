@@ -12,6 +12,7 @@ pub mod anchor_counter_program {
 
     pub fn initialize_or_greet(ctx: Context<InitializeOrGreet>) -> Result<()> {
         ctx.accounts.greeting_account.counter += 1;
+        ctx.accounts.greeting_account.last_caller = ctx.accounts.signer.key();
 
         msg!(
             "Changed data of {} to: {}!",
@@ -33,7 +34,7 @@ pub struct InitializeOrGreet<'info> {
         payer = signer, 
         seeds = [b"greeting_account", signer.key().as_ref()], 
         bump, 
-        space = 8 + 8)]
+        space = 8 + 8 + 32)]
     pub greeting_account: Account<'info, GreetingAccount>,
     #[account(mut)]
     pub signer: Signer<'info>,
@@ -43,4 +44,5 @@ pub struct InitializeOrGreet<'info> {
 #[account]
 pub struct GreetingAccount {
     counter: u64,
+    last_caller: Pubkey,
 }

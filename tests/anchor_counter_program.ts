@@ -103,6 +103,7 @@ describe("anchor_counter_program", async () => {
     );
 
     assert.ok(Number(greetingAccountInfo1.counter) === 1);
+    assert.ok(greetingAccountInfo1.lastCaller.equals(user.publicKey))
 
     const tx2 = await program.methods
       .initializeOrGreet()
