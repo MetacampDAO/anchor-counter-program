@@ -35,7 +35,8 @@ function initializeSolSignerKeypair(): web3.Keypair {
 // Airdrop 1 SOL
 const airdrop1Sol = async (program: Program<AnchorCounterProgram>, pubkey: web3.PublicKey) => {
     await program.provider.connection.confirmTransaction(
-    await program.provider.connection.requestAirdrop(pubkey, 1e9)
+    await program.provider.connection.requestAirdrop(pubkey, 1e9),
+    'confirmed'
   );
 };
 
@@ -71,12 +72,13 @@ describe("anchor_counter_program", async () => {
   it("initializeOrGreet", async () => {
 
     // Check user balance, and airdrop 1 SOL if needed
-    const userInfo = await program.provider.connection.getAccountInfo(user.publicKey)
-    console.log(`Current balance: ${userInfo.lamports / web3.LAMPORTS_PER_SOL}`)
-    if (userInfo.lamports < web3.LAMPORTS_PER_SOL) {
+    const currUserInfo = await program.provider.connection.getAccountInfo(user.publicKey)
+    if (currUserInfo) console.log(`Current balance: ${currUserInfo.lamports / web3.LAMPORTS_PER_SOL}`);
+    if (!currUserInfo || currUserInfo.lamports < web3.LAMPORTS_PER_SOL) {
       console.log(`\rAirdropping 1 SOL ...`)
       await airdrop1Sol(program, user.publicKey);
-      console.log(`\rNew balance: ${userInfo.lamports / web3.LAMPORTS_PER_SOL}`)
+      const latestUserInfo = await program.provider.connection.getAccountInfo(user.publicKey)
+      console.log(`\Latest balance: ${latestUserInfo.lamports / web3.LAMPORTS_PER_SOL}`)
     }
 
     // Find PDA for greeting account
