@@ -4,18 +4,14 @@ use anchor_lang::prelude::*;
 
 // This is your program's public key and it will update
 // automatically when you build the project.
-declare_id!("BNoJPjrAtDJNhynak4rYUtUbGytaSJrRKpdg6iHxgzbs");
+declare_id!("6Kzd8L8wreA3z7VtiG9QgeaLJJrRTA42DzmCKgn5foBT");
 
 #[program]
 pub mod anchor_counter_program {
     use super::*;
 
     pub fn initialize_or_greet(ctx: Context<InitializeOrGreet>) -> Result<()> {
-        if ctx.accounts.greeting_account.counter == 0 {
-            ctx.accounts.greeting_account.counter = 1;
-        } else {
-            ctx.accounts.greeting_account.counter = ctx.accounts.greeting_account.counter + 1;
-        }
+        ctx.accounts.greeting_account.counter += 1;
 
         msg!(
             "Changed data of {} to: {}!",
